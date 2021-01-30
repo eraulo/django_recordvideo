@@ -1,0 +1,132 @@
+{% load static %}
+<html>
+    <head>
+        <title>Record Video</title>
+        <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}"/>
+        <script src="{% static 'vue/dist/vue.global.js' %}"></script>
+        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'vue-resource/dist/vue-resource.min.js' %}"></script>
+    </head>
+    <body>
+    <div class="container">
+        <h2>Record Video</h2>
+        <div id="app">
+             <ol>
+                 <li v-for="record in recordingList">
+                     [[ record.text ]]
+                 </li>
+            </ol>
+            <form v-on:submit.prevent="Addvideo()" method="post" enctype="multipart/form-data">
+                <div class="form-control">
+                    <button v-on:click="startrecord">Start</button>
+                    <h2>Preview</h2>
+                    <video id="preview" ref="preview" width="160" height="120" autoplay muted></video>
+                </div>
+                <div class="form-control">
+                    <button v-on:click="stopButton">
+                        Stop
+                    </button>
+                    <h2>Recording</h2>
+                    <video id="recording" ref="recording" width="160" height="120" controls></video>
+                    <a id="downloadButton" ref="downloadButton">
+                        Download
+                    </a>
+                    <div id="log" ref="log"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Haruka</button>
+            </form>
+        </div>
+
+        <script>
+            let recordingTimeMS = 5000;
+            let recordedBlob;
+            //Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+            Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+            const Videolist = {
+                delimiters: ['[[',']]'],
+                data() {
+                    return {
+                        recordingList: [ 
+                                { id: 0, text: 'Vegetables' },
+                                { id: 1, text: 'Cheese' },
+                                { id: 2, text: 'Whatever else humans are supposed to eat' }
+                        ],
+                    }
+                },
+                methods: {
+                    log(msg) {
+                        this.$refs.log.innerHTML += msg + "\n";
+                    },
+                    wait(delayInMS) {
+                        return new Promise(resolve => setTimeout(resolve, delayInMS));
+                    },
+                    startRecording(stream, lengthInMS) {
+                        let recorder = new MediaRecorder(stream);
+                        let data = [];
+
+                        recorder.ondataavailable = event => data.push(event.data);
+                        recorder.start();
+                        this.log(recorder.state + " for " + (lengthInMS/1000) + " seconds...");
+
+                        let stopped = new Promise((resolve, reject) => {
+                            recorder.onstop = resolve;
+                            recorder.onerror = event => reject(event.name);
+                        });
+
+                        let recorded = this.wait(lengthInMS).then(
+                            () => recorder.state == "recording" && recorder.stop()
+                        );
+
+                        return Promise.all([
+                            stopped,
+                            recorded
+                        ])
+                        .then(() => data);
+                    },
+                    stop(stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    },
+                    stopButton(){
+                        this.stop(this.$refs.preview.srcObject);
+                    },
+                    startrecord(){
+                        navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: true
+                        }).then( stream => {
+                            this.$refs.preview.srcObject = stream;
+                            this.$refs.downloadButton.href = stream;
+                            this.$refs.preview.captureStream = this.$refs.preview.captureStream || this.$refs.preview.mozCaptureStream;
+                            return new Promise(resolve => this.$refs.preview.onplaying = resolve);
+                        }).then(() => this.startRecording(this.$refs.preview.captureStream(), recordingTimeMS))
+                        .then (recordedChunks => {
+                            recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+                            this.$refs.recording.src = URL.createObjectURL(recordedBlob);
+                            this.$refs.downloadButton.href = this.$refs.recording.src;
+                            this.$refs.downloadButton.download = "RecordedVideo.webm";
+
+                            this.log("Successfully recorded " + recordedBlob.size + " bytes of " +
+                            recordedBlob.type + " media.");
+                        }).catch(log);
+                    },
+                    Addvideo(){
+                        const formData = new FormData()
+                        formData.append('video', recordedBlob);
+                        this.$http.post('/video/blogs/', formData).then((response) => {
+                        debugger;
+                            console.log(response)
+                            
+                        }).catch((err) =>{
+                        })
+                    },
+
+                }
+            }
+            const app = Vue.createApp(Videolist)
+            app.mount('#app')
+
+        </script>
+    </div>
+    </body>
+</html>
+
