@@ -26,7 +26,7 @@ SECRET_KEY = 'gods6j2ssbuz-ug-+%gmoa!=6kzy(#enx+t7new5$f5$(^lh()'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -125,7 +125,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'node_modules'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dist'), os.path.join(BASE_DIR, 'node_modules')]
 
 
 REST_FRAMEWORK = {
@@ -133,3 +133,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+# Django rest framework
+#REST_FRAMEWORK = {
+ #   'DEFAULT_AUTHENTICATION_CLASSES': [
+  #      'rest_framework.authentication.SessionAuthentication'
+   # ]
+#}

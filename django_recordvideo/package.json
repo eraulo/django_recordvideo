@@ -4,15 +4,30 @@
   "description": "Record video via api ",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
+    "dev": "webpack --mode=development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ano",
   "license": "ISC",
   "dependencies": {
-    "vue": "^3.0.5",
-    "vue-resource": "^1.5.1"
+    "vue": "^3.0.5"
   },
   "devDependencies": {
-    "bootstrap": "4.0.0-alpha.6"
+    "@popperjs/core": "^2.6.0",
+    "@vue/compiler-sfc": "^3.0.5",
+    "bootstrap": "^5.0.0-beta2",
+    "bootstrap-vue": "^2.21.2",
+    "css-loader": "^5.0.2",
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.20",
+    "popper.js": "^1.16.0",
+    "url-loader": "^1.0.0-beta.0",
+    "vue-loader": "^16.1.2",
+    "vue-resource": "^1.5.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.12",
+    "webpack": "^5.21.1",
+    "webpack-cli": "^4.5.0"
   }
 }
