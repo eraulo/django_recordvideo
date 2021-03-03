@@ -1,5 +1,5 @@
         <template>
-            <h1>About</h1>
+            <h1>Record video from the browser</h1>
             <div class="row">
                 <div v-for="record in recordingList" class="card" style="width: 18rem;">
                     <div class="col-sm-4">
@@ -9,6 +9,8 @@
                             <p>Your browser doesn't support HTML5 video. Here is
                             <a href="[[ record.video ]]">link to the video</a> instead.</p>
                         </video>
+                        <button class="btn btn-danger" v-on:click="deletevideo(`${ record.id }`, `${ record }`)">Delete</button>
+                        <button class="btn btn-primary" v-on:click="editvideo(`${ record.id }`)">edit</button>
                     </div>
                 </div>
             </div>
@@ -30,7 +32,8 @@
             <form v-on:submit.prevent="Addvideo()" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <h2>Recording</h2>
-                    <video id="recording" ref="recording" width="160" height="120" controls></video>
+                    <video id="recording" ref="recording" :value="recording" :disabled="!isEditing"
+           :class="{view: !isEditing}" width="160" height="120" controls></video>
                     <div id="log" ref="log"></div>
                 </div>
                 <button type="submit" class="btn btn-primary">Haruka</button>
@@ -43,6 +46,7 @@
                 delimiters: ['[[',']]'],
                 data() {
                     return {
+                        isEditing: false,
                         recordingList: [],
                     }
                 },
@@ -65,12 +69,15 @@
                         }
                         return cookieValue;
                     },
+
                     log(msg) {
                         this.$refs.log.innerHTML += msg + "\n";
                     },
+
                     wait(delayInMS) {
                         return new Promise(resolve => setTimeout(resolve, delayInMS));
                     },
+
                     startRecording(stream, lengthInMS) {
                         let recorder = new MediaRecorder(stream);
                         let data = [];
@@ -150,6 +157,41 @@
                             console.log(response);
                             
                         }).catch((err) =>{
+                            console.log(err);
+                        })
+                    },
+                    deletevideo(id, video){
+                        fetch(`/video/blogs/${ id }/`,{
+                            credentials: 'same-origin',
+                            method: 'DELETE', // or 'PUT'
+                            headers: {
+                                "X-CSRFToken": this.getCookie("csrftoken"),
+                                'Content-Type': 'application/json; charset=UTF-8',
+                            },
+                            body: JSON.stringify(video)
+                         })
+                        .then((response) => {
+                            this.GetMessage();
+                            console.log(response);
+                        }).catch((err) =>{
+                            console.log(err);
+                        })
+                         //axios.delete(`/video/blogs/${ id }/`)
+                            //.then(response => (console.log(response)))
+                            ///.catch(error => (console.log(error.response)));
+                    },
+                    editvideo(id){
+                        fetch(`/video/blogs/${ id }/`, {
+                            method: 'GET',
+
+                        })
+                        .then(res => res.json())
+                        .then((response) => {
+                            this.$refs.recording.src = response.video;
+                            console.log(response)
+                        })
+                        .catch((err) => {
+                            console.log(err);
                         })
                     },
 
