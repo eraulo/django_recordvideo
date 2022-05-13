@@ -125,17 +125,18 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dist'), os.path.join(BASE_DIR, 'node_modules')]
+STATIC_ROOT = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dist'),]
 
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
+#REST_FRAMEWORK = {
+    #'DEFAULT_PERMISSION_CLASSES': [
         #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
         #'rest_framework.authentication.BasicAuthentication',
         #'rest_framework.authentication.SessionAuthentication',
-    ]
-}
+    #]
+#}
 
 # Django rest framework
 #REST_FRAMEWORK = {

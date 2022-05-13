@@ -113,5 +113,5 @@ canoe-environment.js
 canoe-project.js
 locale/**/*.~
 .DS_Store
-node_module
-media
+/node_module
+/media
