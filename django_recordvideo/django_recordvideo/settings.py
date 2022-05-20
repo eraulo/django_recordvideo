@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'gods6j2ssbuz-ug-+%gmoa!=6kzy(#enx+t7new5$f5$(^lh()'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*',]
 
@@ -78,10 +78,17 @@ WSGI_APPLICATION = 'django_recordvideo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'videorecord_db',
     }
 }
+
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        #'NAME': 'videorecord_db',
+    #}
+#}
 
 
 
