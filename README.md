@@ -7,7 +7,7 @@ Instruction:
 3. npm run build
 4. pip install requiments.txt
 
-- Postresql
+- postgresql
 5. createdb videorecord_db 
 6. ./manage.py migrate
 7. ./manage.py collecstatic
