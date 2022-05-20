@@ -1,20 +1,8 @@
         <template>
-            <h1>Record video from the browser</h1>
-            <div class="row">
-                <div v-for="record in recordingList" class="card" style="width: 18rem;">
-                    <div class="col-sm-4">
-                        <video controls width="250">
-                            <source v-bind:src="[[ record.video ]]" type="video/mp4">
-                            <source v-bind:src="[[ record.video ]]" type="video/webm">
-                            <p>Your browser doesn't support HTML5 video. Here is
-                            <a href="[[ record.video ]]">link to the video</a> instead.</p>
-                        </video>
-                        <button class="btn btn-danger" v-on:click="deletevideo(`${ record.id }`, `${ record }`)">Delete</button>
-                        <button class="btn btn-primary" v-on:click="editvideo(`${ record.id }`)">edit</button>
-                    </div>
-                </div>
-            </div>
-
+        <div class="container">
+        <div class="row">
+        <h1>Record video from the browser</h1>
+        <div class="col-sm-4">
             <div class="form-group">
                 <button v-on:click="startrecord">Start</button>
                 <h2>Preview</h2>
@@ -25,7 +13,7 @@
                     Stop
                 </button>
             </div>
-            <a id="downloadButton" ref="downloadButton">
+            <a id="downloadButton" ref="downloadButton" class="btn btn-priamry">
                 Download
             </a>
 
@@ -35,9 +23,30 @@
                     <video id="recording" ref="recording" :value="recording" :disabled="!isEditing"
            :class="{view: !isEditing}" width="160" height="120" controls></video>
                     <div id="log" ref="log"></div>
-                </div>
-                <button type="submit" class="btn btn-primary">Haruka</button>
+                </div><br>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+        </div>
+        <div class="col-sm-8">
+            <div class="row">
+                <div v-for="record in recordingList" class="card" style="width: 18rem;">
+                    <div class="col-sm-4">
+                        <video controls width="250">
+                            <source v-bind:src="[[ record.video ]]" type="video/mp4">
+                            <source v-bind:src="[[ record.video ]]" type="video/webm">
+                            <p>Your browser doesn't support HTML5 video. Here is
+                            <a href="[[ record.video ]]">link to the video</a> instead.</p>
+                        </video>
+                        <span>
+                            <button class="btn btn-danger" v-on:click="deletevideo(`${ record.id }`, `${ record }`)">Delete</button>
+                            <button class="btn btn-primary" v-on:click="editvideo(`${ record.id }`)">edit</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
         </template>
         <script>
             let recordingTimeMS = 5000;
@@ -50,7 +59,7 @@
                         recordingList: [],
                     }
                 },
-                mounted: function(){
+                mounted:function(){
                     this.GetMessage();
                 },
                 methods: {
@@ -60,7 +69,6 @@
                             const cookies = document.cookie.split(';');
                             for (let i = 0; i < cookies.length; i++) {
                                 const cookie = cookies[i].trim();
-                                // Does this cookie string begin with the name we want?
                                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                                     break;
@@ -101,12 +109,15 @@
                         ])
                         .then(() => data);
                     },
+
                     stop(stream) {
                         stream.getTracks().forEach(track => track.stop());
                     },
+
                     stopButton(){
                         this.stop(this.$refs.preview.srcObject);
                     },
+
                     startrecord(){
                         navigator.mediaDevices.getUserMedia({
                             video: true,
@@ -127,6 +138,7 @@
                             recordedBlob.type + " media.");
                         }).catch(log);
                     },
+
                     GetMessage(){
                         fetch('/video/blogs/',{
                             method: "GET",
@@ -140,11 +152,12 @@
                             console.log(err);
                         })
                     },
+
                     Addvideo(){
                         const formData = new FormData();
                         formData.append('video', recordedBlob, "RecordedVideo.webm");
                         fetch('/video/blogs/',{
-                            method: 'POST', // or 'PUT'
+                            method: 'POST',
                             mode : 'same-origin',
                             credentials: "same-origin",
                             headers: {
@@ -160,10 +173,11 @@
                             console.log(err);
                         })
                     },
+
                     deletevideo(id, video){
                         fetch(`/video/blogs/${ id }/`,{
                             credentials: 'same-origin',
-                            method: 'DELETE', // or 'PUT'
+                            method: 'DELETE',
                             headers: {
                                 "X-CSRFToken": this.getCookie("csrftoken"),
                                 'Content-Type': 'application/json; charset=UTF-8',
@@ -176,14 +190,11 @@
                         }).catch((err) =>{
                             console.log(err);
                         })
-                         //axios.delete(`/video/blogs/${ id }/`)
-                            //.then(response => (console.log(response)))
-                            ///.catch(error => (console.log(error.response)));
                     },
+
                     editvideo(id){
                         fetch(`/video/blogs/${ id }/`, {
                             method: 'GET',
-
                         })
                         .then(res => res.json())
                         .then((response) => {
