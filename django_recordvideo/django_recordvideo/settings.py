@@ -26,7 +26,7 @@ SECRET_KEY = 'gods6j2ssbuz-ug-+%gmoa!=6kzy(#enx+t7new5$f5$(^lh()'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['recordvideo.pythonanywhere.com',]
 
 
 # Application definition
@@ -79,9 +79,10 @@ WSGI_APPLICATION = 'django_recordvideo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'videorecord_db',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 #DATABASES = {
     #'default': {
