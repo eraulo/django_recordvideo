@@ -1,51 +1,51 @@
         <template>
         <div class="container">
-        <div class="row">
-        <h1>Record video from the browser</h1>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <button v-on:click="startrecord">Start</button>
-                <h2>Preview</h2>
-                <video id="preview" ref="preview" width="160" height="120" autoplay muted></video>
-            </div>
-            <div class="form-group">
-                <button v-on:click="stopButton">
-                    Stop
-                </button>
-            </div>
-            <a id="downloadButton" ref="downloadButton" class="btn btn-priamry">
-                Download
-            </a>
-
-            <form v-on:submit.prevent="Addvideo()" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <h2>Recording</h2>
-                    <video id="recording" ref="recording" :value="recording" :disabled="!isEditing"
-           :class="{view: !isEditing}" width="160" height="120" controls></video>
-                    <div id="log" ref="log"></div>
-                </div><br>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
-        <div class="col-sm-8">
             <div class="row">
-                <div v-for="record in recordingList" class="card" style="width: 18rem;">
-                    <div class="col-sm-4">
-                        <video controls width="250">
-                            <source v-bind:src="[[ record.video ]]" type="video/mp4">
-                            <source v-bind:src="[[ record.video ]]" type="video/webm">
-                            <p>Your browser doesn't support HTML5 video. Here is
-                            <a href="[[ record.video ]]">link to the video</a> instead.</p>
-                        </video>
-                        <span>
-                            <button class="btn btn-danger" v-on:click="deletevideo(`${ record.id }`, `${ record }`)">Delete</button>
-                            <button class="btn btn-primary" v-on:click="editvideo(`${ record.id }`)">edit</button>
-                        </span>
+                <h3>Record video from the browser</h3>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <button v-on:click="startrecord">Start</button>
+                        <h2>Preview</h2>
+                        <video id="preview" ref="preview" width="160" height="120" autoplay muted></video>
+                    </div>
+                    <div class="form-group">
+                        <button v-on:click="stopButton">
+                            Stop
+                        </button>
+                    </div>
+                    <a id="downloadButton" ref="downloadButton" class="btn btn-priamry">
+                        Download
+                    </a>
+
+                    <form v-on:submit.prevent="Addvideo()" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <h3>Recording</h3>
+                            <video id="recording" ref="recording" :value="recording" :disabled="!isEditing"
+           :class="{view: !isEditing}" width="160" height="120" controls></video>
+                            <div id="log" ref="log"></div>
+                        </div><br>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                <div class="col-sm-8">
+                    <div class="row">
+                        <div v-for="record in recordingList" class="card" style="width: 18rem;">
+                            <div class="col-sm-4">
+                                <video controls width="250">
+                                    <source v-bind:src="[[ record.video ]]" type="video/mp4">
+                                    <source v-bind:src="[[ record.video ]]" type="video/webm">
+                                    <p>Your browser doesn't support HTML5 video. Here is
+                                    <a href="[[ record.video ]]">link to the video</a> instead.</p>
+                                </video>
+                                <span>
+                                    <button class="btn btn-danger" v-on:click="deletevideo(`${ record.id }`, `${ record }`)">Delete</button>
+                                    <button class="btn btn-primary" v-on:click="editvideo(`${ record.id }`)">edit</button>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
         </div>
         </template>
         <script>
